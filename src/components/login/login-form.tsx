@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 
 import {
   Form,
@@ -8,13 +9,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { formLoginSchema } from "@/schemas/login.schema";
 import {
   Card,
   CardContent,
@@ -22,7 +18,20 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+
+import { useForm } from "react-hook-form";
+
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formLoginSchema } from "@/schemas/login.schema";
+
 import Link from "next/link";
+import { setCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
+
+import { api } from "@/services/api";
+import { AxiosError, isAxiosError } from "axios";
+import { AuthError } from "@/errors/auth.error";
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof formLoginSchema>>({
@@ -33,7 +42,32 @@ export function LoginForm() {
     },
   });
 
-  const onSubmit = () => {};
+  const [error, seterror] = useState<AuthError | null>(null);
+
+  const route = useRouter();
+
+  const onSubmit = async (values: z.infer<typeof formLoginSchema>) => {
+    try {
+      const response = await api.post("auth/login", {
+        email: values.email,
+        password: values.password,
+      });
+
+      const { access_token } = response.data;
+
+      setCookie("authorization", access_token);
+
+      route.push("/dashboard");
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+
+        const errorResponse = axiosError.response?.data as AuthError;
+
+        seterror(errorResponse);
+      }
+    }
+  };
 
   return (
     <Card className="w-4/5 max-w-96 bg-transparent border-zinc-700">
@@ -90,6 +124,7 @@ export function LoginForm() {
                       className="bg-transparent border-zinc-700 mt-0 text-zinc-300"
                     />
                   </FormControl>
+
                   <FormMessage className="text-red-300 font-normal" />
                 </FormItem>
               )}
@@ -107,6 +142,8 @@ export function LoginForm() {
         <Button className="w-full border border-zinc-700 mt-3">
           Entre com o google
         </Button>
+
+        {error?.message && <span>{error.message}</span>}
       </CardContent>
     </Card>
   );
