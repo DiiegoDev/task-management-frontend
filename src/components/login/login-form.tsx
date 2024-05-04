@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 
 import {
   Form,
@@ -32,6 +31,7 @@ import { useRouter } from "next/navigation";
 import { api } from "@/services/api";
 import { AxiosError, isAxiosError } from "axios";
 import { AuthError } from "@/errors/auth.error";
+import { useToast } from "../ui/use-toast";
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof formLoginSchema>>({
@@ -42,9 +42,9 @@ export function LoginForm() {
     },
   });
 
-  const [error, seterror] = useState<AuthError | null>(null);
-
   const route = useRouter();
+
+  const { toast } = useToast();
 
   const onSubmit = async (values: z.infer<typeof formLoginSchema>) => {
     try {
@@ -53,9 +53,9 @@ export function LoginForm() {
         password: values.password,
       });
 
-      const { access_token } = response.data;
+      const data = response.data;
 
-      setCookie("authorization", access_token);
+      setCookie("authorization", data.token);
 
       route.push("/dashboard");
     } catch (error) {
@@ -64,7 +64,7 @@ export function LoginForm() {
 
         const errorResponse = axiosError.response?.data as AuthError;
 
-        seterror(errorResponse);
+        toast({ description: errorResponse.message });
       }
     }
   };
@@ -142,8 +142,6 @@ export function LoginForm() {
         <Button className="w-full border border-zinc-700 mt-3">
           Entre com o google
         </Button>
-
-        {error?.message && <span>{error.message}</span>}
       </CardContent>
     </Card>
   );

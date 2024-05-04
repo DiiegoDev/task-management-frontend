@@ -22,6 +22,11 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { api } from "@/services/api";
+import { useToast } from "../ui/use-toast";
+import { AxiosError, isAxiosError } from "axios";
+import { AuthError } from "@/errors/auth.error";
+import { useRouter } from "next/navigation";
 
 export function SignUpForm() {
   const form = useForm<z.infer<typeof formSignupSchema>>({
@@ -29,7 +34,36 @@ export function SignUpForm() {
     defaultValues: { email: "", name: "", password: "" },
   });
 
-  const onSubmit = () => {};
+  const { toast } = useToast();
+
+  const router = useRouter();
+
+  const onSubmit = async (values: z.infer<typeof formSignupSchema>) => {
+    try {
+      const { email, name, password } = values;
+
+      await api.post("/users/create", {
+        email,
+        name,
+        password,
+      });
+
+      toast({
+        title: "Usuário cadastrado",
+        description: "Faça login para entrar",
+      });
+
+      router.push("/login");
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+
+        const errorResponse = axiosError.response?.data as AuthError;
+
+        toast({ description: errorResponse.message });
+      }
+    }
+  };
 
   return (
     <Card className="w-4/5 max-w-96 bg-transparent border-zinc-700">

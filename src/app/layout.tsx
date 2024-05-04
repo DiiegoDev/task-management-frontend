@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/footer";
+import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function RootLayout({
         className={`${inter.className} bg-zinc-900 text-zinc-300 min-h-screen flex flex-col`}
       >
         {children}
+        <Toaster />
         <Footer />
       </body>
     </html>
