@@ -17,9 +17,13 @@ export function PrivatePage({ children }: { children: ReactNode }) {
     "authorization"
   ) as unknown as TokenProps;
 
+  if (!token) {
+    redirect("/login");
+  }
+
   const isTokenValid = verifyJwt(token.value);
 
-  if (!token || !isTokenValid) {
+  if (!isTokenValid) {
     redirect("/login");
   }
 

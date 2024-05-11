@@ -10,7 +10,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "../../ui/card";
 import {
   Form,
   FormControl,
@@ -18,12 +18,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+} from "../../ui/form";
+import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
 import Link from "next/link";
 import { api } from "@/services/api";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "../../ui/use-toast";
 import { AxiosError, isAxiosError } from "axios";
 import { AuthError } from "@/errors/auth.error";
 import { useRouter } from "next/navigation";
@@ -66,9 +66,9 @@ export function SignUpForm() {
   };
 
   return (
-    <Card className="w-4/5 max-w-96 bg-transparent border-zinc-700">
+    <Card className="w-4/5 max-w-[352px] bg-transparent">
       <CardHeader>
-        <CardTitle className="text-zinc-200">Crie sua conta</CardTitle>
+        <CardTitle className="">Crie sua conta</CardTitle>
         <CardDescription>
           Já possui uma conta?{" "}
           <Link href="/login" className="underline">
@@ -88,12 +88,12 @@ export function SignUpForm() {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-300">Nome</FormLabel>
+                  <FormLabel className="">Nome</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       placeholder="Nome do usuário"
-                      className="bg-transparent border-zinc-700 text-zinc-300"
+                      className="bg-transparent"
                     />
                   </FormControl>
                   <FormMessage className="text-red-300 font-normal" />
@@ -106,12 +106,12 @@ export function SignUpForm() {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-300">Email</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       placeholder="email@email.com"
-                      className="bg-transparent border-zinc-700 text-zinc-300"
+                      className="bg-transparent"
                     />
                   </FormControl>
                   <FormMessage className="text-red-300 font-normal" />
@@ -124,13 +124,13 @@ export function SignUpForm() {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-300">Senha</FormLabel>
+                  <FormLabel>Senha</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type="password"
                       placeholder="******"
-                      className="bg-transparent border-zinc-700 text-zinc-300"
+                      className="bg-transparent"
                     />
                   </FormControl>
                   <FormMessage className="text-red-300 font-normal" />
@@ -140,7 +140,7 @@ export function SignUpForm() {
 
             <Button
               type="submit"
-              className="bg-zinc-800 hover:bg-zinc-700 transition mt-4 text-zinc-300"
+              className="bg-blue-300 hover:bg-blue-200 transition mt-4 text-zinc-900"
             >
               Criar
             </Button>

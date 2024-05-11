@@ -16,7 +16,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "../../ui/card";
 
 import { useForm } from "react-hook-form";
 
@@ -31,7 +31,7 @@ import { useRouter } from "next/navigation";
 import { api } from "@/services/api";
 import { AxiosError, isAxiosError } from "axios";
 import { AuthError } from "@/errors/auth.error";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "../../ui/use-toast";
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof formLoginSchema>>({
@@ -42,7 +42,7 @@ export function LoginForm() {
     },
   });
 
-  const route = useRouter();
+  const router = useRouter();
 
   const { toast } = useToast();
 
@@ -56,8 +56,9 @@ export function LoginForm() {
       const data = response.data;
 
       setCookie("authorization", data.token);
+      setCookie("userId", data.id);
 
-      route.push("/dashboard");
+      router.push("/app/tasks");
     } catch (error) {
       if (isAxiosError(error)) {
         const axiosError = error as AxiosError;
@@ -70,14 +71,14 @@ export function LoginForm() {
   };
 
   return (
-    <Card className="w-4/5 max-w-96 bg-transparent border-zinc-700">
+    <Card className="w-4/5 max-w-[352px] bg-transparent border-zinc-700">
       <CardHeader>
-        <CardTitle className="text-zinc-200">Bem vindo</CardTitle>
-        <CardDescription className="text-zinc-300">
+        <CardTitle>Bem vindo</CardTitle>
+        <CardDescription>
           Ainda não possui uma conta?{" "}
           <Link href="/signup" className="underline">
             cadastre-se
-          </Link>{" "}
+          </Link>
         </CardDescription>
       </CardHeader>
 
@@ -92,15 +93,13 @@ export function LoginForm() {
               name="email"
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-1 items-start">
-                  <FormLabel className="text-sm font-normal text-zinc-200">
-                    Email
-                  </FormLabel>
+                  <FormLabel className="text-sm font-normal">Email</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="email@email.com"
                       type="email"
                       {...field}
-                      className="bg-transparent border-zinc-700 mt-0 text-zinc-300"
+                      className="bg-transparent"
                     />
                   </FormControl>
                   <FormMessage className="text-red-300 font-normal" />
@@ -113,7 +112,7 @@ export function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-1 items-start">
-                  <FormLabel className="text-sm font-normal text-zinc-200">
+                  <FormLabel className="text-sm font-normal">
                     Passaword
                   </FormLabel>
                   <FormControl>
@@ -121,7 +120,7 @@ export function LoginForm() {
                       type="password"
                       placeholder="******"
                       {...field}
-                      className="bg-transparent border-zinc-700 mt-0 text-zinc-300"
+                      className="bg-transparent"
                     />
                   </FormControl>
 
@@ -131,17 +130,13 @@ export function LoginForm() {
             />
 
             <Button
-              className="mt-4 bg-zinc-800 hover:bg-zinc-700 transition text-zinc-200 font-medium"
+              className="mt-4 bg-blue-300 hover:bg-blue-200 transition text-zinc-900 font-semibold"
               type="submit"
             >
               Entrar
             </Button>
           </form>
         </Form>
-
-        <Button className="w-full border border-zinc-700 mt-3">
-          Entre com o google
-        </Button>
       </CardContent>
     </Card>
   );
