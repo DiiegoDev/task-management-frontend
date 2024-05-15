@@ -11,13 +11,13 @@ import {
 import { CreateTaskForm } from "../create-task-form";
 
 interface Props {
-  children: ReactNode;
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
 }
 
-export function SheetCreateTask({ children }: Props) {
+export function SheetCreateTask({ isOpen, setIsOpen }: Props) {
   return (
-    <Sheet>
-      <SheetTrigger asChild>{children}</SheetTrigger>
+    <Sheet open={isOpen}>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Create a new task</SheetTitle>
@@ -25,7 +25,7 @@ export function SheetCreateTask({ children }: Props) {
             Create a new task here. Click create when you're done.
           </SheetDescription>
         </SheetHeader>
-        <CreateTaskForm />
+        <CreateTaskForm setIsOpen={setIsOpen} />
       </SheetContent>
     </Sheet>
   );

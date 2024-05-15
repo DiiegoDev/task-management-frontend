@@ -1,6 +1,7 @@
 import { Dashboard } from "@/components/dashboard/dashboard";
 import { PrivatePage } from "@/components/auth/private-page";
 import { PropsWithChildren } from "react";
+import { Toaster } from "@/components/ui/toaster";
 
 export default async function layout({ children }: PropsWithChildren) {
   return (
@@ -9,6 +10,7 @@ export default async function layout({ children }: PropsWithChildren) {
         <Dashboard />
         {children}
       </div>
+      <Toaster />
     </PrivatePage>
   );
 }

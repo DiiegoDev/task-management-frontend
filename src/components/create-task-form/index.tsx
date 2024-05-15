@@ -1,4 +1,5 @@
 "use client";
+import { getCookies } from "cookies-next";
 
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
@@ -27,8 +28,23 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "../ui/calendar";
+import { api } from "@/services/api";
+import { useToast } from "../ui/use-toast";
+import { SheetClose, SheetFooter } from "../ui/sheet";
 
-export function CreateTaskForm() {
+interface CreateTaskReq {
+  userId: string | undefined;
+  title: string;
+  label: string;
+  priority: string;
+  dueDate: Date;
+}
+
+interface Props {
+  setIsOpen: (value: boolean) => void;
+}
+
+export function CreateTaskForm({ setIsOpen }: Props) {
   const form = useForm<z.infer<typeof createTaskSchema>>({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
@@ -38,8 +54,31 @@ export function CreateTaskForm() {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof createTaskSchema>) => {
-    console.log(data);
+  const { toast } = useToast();
+
+  const onSubmit = async (values: z.infer<typeof createTaskSchema>) => {
+    try {
+      const { authorization, userId } = getCookies();
+
+      const data: CreateTaskReq = {
+        userId,
+        title: values.title,
+        label: values.label,
+        priority: values.priority,
+        dueDate: values.dueDate,
+      };
+
+      await api.post("task/create", data, {
+        headers: {
+          Authorization: `Bearer ${authorization}`,
+          "Content-Type": "application/json",
+        },
+      });
+      setIsOpen(false);
+      toast({ description: "Tarefa criada com sucesso" });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -159,9 +198,17 @@ export function CreateTaskForm() {
           )}
         />
 
-        <Button type="submit" className="self-end mt-4">
-          create task
-        </Button>
+        <SheetFooter className="mt-4">
+          <Button
+            onClick={() => setIsOpen(false)}
+            variant={"outline"}
+            type="button"
+          >
+            Close
+          </Button>
+
+          <Button type="submit">Create task</Button>
+        </SheetFooter>
       </form>
     </Form>
   );
