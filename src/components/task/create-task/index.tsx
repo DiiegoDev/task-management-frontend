@@ -1,19 +1,18 @@
-"use client";
-import { getCookies } from "cookies-next";
+import { useToast } from "@/components/ui/use-toast";
+import { createTaskSchema } from "@/schemas/create-task-schema";
+import * as z from "zod";
+import { createTask } from "@/services/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createTaskSchema } from "@/schemas/create-task-schema";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -22,29 +21,37 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon } from "lucide-react";
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-import { Calendar } from "../ui/calendar";
-import { api } from "@/services/api";
-import { useToast } from "../ui/use-toast";
-import { SheetClose, SheetFooter } from "../ui/sheet";
-
-interface CreateTaskReq {
-  userId: string | undefined;
-  title: string;
-  label: string;
-  priority: string;
-  dueDate: Date;
-}
+import { Calendar } from "@/components/ui/calendar";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface Props {
   setIsOpen: (value: boolean) => void;
 }
 
-export function CreateTaskForm({ setIsOpen }: Props) {
+export function CreateTask({ setIsOpen }: Props) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (newTask: z.infer<typeof createTaskSchema>) =>
+      createTask(newTask),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      setIsOpen(false);
+    },
+  });
+
   const form = useForm<z.infer<typeof createTaskSchema>>({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
@@ -54,32 +61,13 @@ export function CreateTaskForm({ setIsOpen }: Props) {
     },
   });
 
-  const { toast } = useToast();
-
-  const onSubmit = async (values: z.infer<typeof createTaskSchema>) => {
-    try {
-      const { authorization, userId } = getCookies();
-
-      const data: CreateTaskReq = {
-        userId,
-        title: values.title,
-        label: values.label,
-        priority: values.priority,
-        dueDate: values.dueDate,
-      };
-
-      await api.post("task/create", data, {
-        headers: {
-          Authorization: `Bearer ${authorization}`,
-          "Content-Type": "application/json",
-        },
-      });
-      setIsOpen(false);
-      toast({ description: "Tarefa criada com sucesso" });
-    } catch (error) {
-      console.log(error);
-    }
+  const onSubmit = (data: z.infer<typeof createTaskSchema>) => {
+    mutation.mutate(data);
   };
+
+  if (mutation.status === "success") {
+    return <h1>Tarefa adicionada</h1>;
+  }
 
   return (
     <Form {...form}>
@@ -92,8 +80,9 @@ export function CreateTaskForm({ setIsOpen }: Props) {
           name="title"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Título</FormLabel>
               <FormControl>
-                <Input placeholder="Type your task title" {...field} />
+                <Input placeholder="Digite o título da tarefa" {...field} />
               </FormControl>
               <FormMessage className="text-red-300 font-light text-[12px]" />
             </FormItem>
@@ -106,13 +95,14 @@ export function CreateTaskForm({ setIsOpen }: Props) {
             name="label"
             render={({ field }) => (
               <FormItem className="flex-1">
+                <FormLabel>Label</FormLabel>
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a label" />
+                      <SelectValue placeholder="Label" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
@@ -135,20 +125,21 @@ export function CreateTaskForm({ setIsOpen }: Props) {
             name="priority"
             render={({ field }) => (
               <FormItem className="flex-1">
+                <FormLabel>Prioridade</FormLabel>
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a priority" />
+                      <SelectValue placeholder="Prioridade" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Priority</SelectLabel>
-                        <SelectItem value="low">Low</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
+                        <SelectLabel>Prioridade</SelectLabel>
+                        <SelectItem value="Baixa">Baixa</SelectItem>
+                        <SelectItem value="Media">Média</SelectItem>
+                        <SelectItem value="Alta">Alta</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -165,6 +156,7 @@ export function CreateTaskForm({ setIsOpen }: Props) {
           name="dueDate"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Data de entrega</FormLabel>
               <FormControl>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -188,7 +180,6 @@ export function CreateTaskForm({ setIsOpen }: Props) {
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) => date < new Date()}
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>
@@ -198,18 +189,20 @@ export function CreateTaskForm({ setIsOpen }: Props) {
           )}
         />
 
-        <SheetFooter className="mt-4">
+        <div className="mt-4 flex gap-2 justify-end">
           <Button
             onClick={() => setIsOpen(false)}
             variant={"outline"}
             type="button"
           >
-            Close
+            Fechar
           </Button>
 
-          <Button type="submit">Create task</Button>
-        </SheetFooter>
+          <Button type="submit">Salvar</Button>
+        </div>
       </form>
     </Form>
   );
 }
+
+//return <TaskForm setIsOpen={setIsOpen} onSubmit={onSubmit}></TaskForm>;

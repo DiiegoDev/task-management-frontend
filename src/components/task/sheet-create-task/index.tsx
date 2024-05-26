@@ -6,9 +6,9 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
-} from "../ui/sheet";
-import { CreateTaskForm } from "../create-task-form";
+} from "../../ui/sheet";
+
+import { CreateTask } from "../create-task";
 
 interface Props {
   isOpen: boolean;
@@ -20,12 +20,13 @@ export function SheetCreateTask({ isOpen, setIsOpen }: Props) {
     <Sheet open={isOpen}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Create a new task</SheetTitle>
-          <SheetDescription>
-            Create a new task here. Click create when you're done.
+          <SheetTitle>Crie uma nova tarefa</SheetTitle>
+          <SheetDescription className="leading-relaxed">
+            Crie uma nova tarefa aqui. Clique em salvar quando preencher todos
+            os campos.
           </SheetDescription>
         </SheetHeader>
-        <CreateTaskForm setIsOpen={setIsOpen} />
+        <CreateTask setIsOpen={setIsOpen} />
       </SheetContent>
     </Sheet>
   );

@@ -66,7 +66,7 @@ export function SignUpForm() {
   };
 
   return (
-    <Card className="w-4/5 max-w-[352px] bg-transparent">
+    <Card className="w-4/5 max-w-[352px]">
       <CardHeader>
         <CardTitle className="">Crie sua conta</CardTitle>
         <CardDescription>
@@ -138,10 +138,7 @@ export function SignUpForm() {
               )}
             />
 
-            <Button
-              type="submit"
-              className="bg-blue-300 hover:bg-blue-200 transition mt-4 text-zinc-900"
-            >
+            <Button type="submit" className=" transition mt-4">
               Criar
             </Button>
           </form>

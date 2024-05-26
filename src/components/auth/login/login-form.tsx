@@ -55,8 +55,8 @@ export function LoginForm() {
 
       const data = response.data;
 
-      setCookie("authorization", data.token);
-      setCookie("userId", data.id);
+      setCookie("authorization", data.token, { maxAge: data.exp });
+      setCookie("userId", data.id, { maxAge: data.exp });
 
       router.push("/app/tasks");
     } catch (error) {
@@ -71,7 +71,7 @@ export function LoginForm() {
   };
 
   return (
-    <Card className="w-4/5 max-w-[352px] bg-transparent border-zinc-700">
+    <Card className="w-4/5 max-w-[352px]">
       <CardHeader>
         <CardTitle>Bem vindo</CardTitle>
         <CardDescription>
@@ -129,10 +129,7 @@ export function LoginForm() {
               )}
             />
 
-            <Button
-              className="mt-4 bg-blue-300 hover:bg-blue-200 transition text-zinc-900 font-semibold"
-              type="submit"
-            >
+            <Button className="mt-4 font-semibold" type="submit">
               Entrar
             </Button>
           </form>
