@@ -61,7 +61,6 @@ export function CreateTask({ setIsOpen }: Props) {
   });
 
   const onSubmit = (data: z.infer<typeof createTaskSchema>) => {
-    console.log(data);
     mutation.mutate(data);
   };
 

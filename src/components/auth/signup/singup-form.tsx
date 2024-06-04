@@ -22,47 +22,27 @@ import {
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import Link from "next/link";
-import { api } from "@/services/api";
+import { onSignup } from "@/services/api";
 import { useToast } from "../../ui/use-toast";
-import { AxiosError, isAxiosError } from "axios";
-import { AuthError } from "@/errors/auth.error";
+
 import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 
 export function SignUpForm() {
+  const router = useRouter();
+
+  const mutation = useMutation({
+    mutationFn: (data: z.infer<typeof formSignupSchema>) => onSignup(data),
+    onSuccess: () => router.push("/login"),
+  });
+
   const form = useForm<z.infer<typeof formSignupSchema>>({
     resolver: zodResolver(formSignupSchema),
     defaultValues: { email: "", name: "", password: "" },
   });
 
-  const { toast } = useToast();
-
-  const router = useRouter();
-
-  const onSubmit = async (values: z.infer<typeof formSignupSchema>) => {
-    try {
-      const { email, name, password } = values;
-
-      await api.post("/users/create", {
-        email,
-        name,
-        password,
-      });
-
-      toast({
-        title: "Usuário cadastrado",
-        description: "Faça login para entrar",
-      });
-
-      router.push("/login");
-    } catch (error) {
-      if (isAxiosError(error)) {
-        const axiosError = error as AxiosError;
-
-        const errorResponse = axiosError.response?.data as AuthError;
-
-        toast({ description: errorResponse.message });
-      }
-    }
+  const onSubmit = async (data: z.infer<typeof formSignupSchema>) => {
+    mutation.mutate(data);
   };
 
   return (

@@ -25,15 +25,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formLoginSchema } from "@/schemas/login.schema";
 
 import Link from "next/link";
-import { setCookie } from "cookies-next";
+import { useMutation } from "@tanstack/react-query";
+import { onLogin } from "@/services/api";
 import { useRouter } from "next/navigation";
 
-import { api } from "@/services/api";
-import { AxiosError, isAxiosError } from "axios";
-import { AuthError } from "@/errors/auth.error";
-import { useToast } from "../../ui/use-toast";
-
 export function LoginForm() {
+  const router = useRouter();
+
+  const mutation = useMutation({
+    mutationFn: (data: z.infer<typeof formLoginSchema>) => onLogin(data),
+    onSuccess: () => router.push("/app/tasks"),
+  });
+
   const form = useForm<z.infer<typeof formLoginSchema>>({
     resolver: zodResolver(formLoginSchema),
     defaultValues: {
@@ -42,32 +45,8 @@ export function LoginForm() {
     },
   });
 
-  const router = useRouter();
-
-  const { toast } = useToast();
-
-  const onSubmit = async (values: z.infer<typeof formLoginSchema>) => {
-    try {
-      const response = await api.post("auth/login", {
-        email: values.email,
-        password: values.password,
-      });
-
-      const data = response.data;
-
-      setCookie("authorization", data.token, { maxAge: data.exp });
-      setCookie("userId", data.id, { maxAge: data.exp });
-
-      router.push("/app/tasks");
-    } catch (error) {
-      if (isAxiosError(error)) {
-        const axiosError = error as AxiosError;
-
-        const errorResponse = axiosError.response?.data as AuthError;
-
-        toast({ description: errorResponse.message });
-      }
-    }
+  const onSubmit = (data: z.infer<typeof formLoginSchema>) => {
+    mutation.mutate(data);
   };
 
   return (

@@ -1,9 +1,14 @@
 import { toast } from "@/components/ui/use-toast";
+import { AuthError } from "@/errors/auth.error";
 import { CreateTaskReq, Task } from "@/interfaces/task.interface";
 import { createTaskSchema } from "@/schemas/create-task-schema";
+import { formLoginSchema } from "@/schemas/login.schema";
+import { formSignupSchema } from "@/schemas/signup.schema";
 import { updateTaskSchema } from "@/schemas/update-task-schema";
-import axios from "axios";
-import { getCookies } from "cookies-next";
+import axios, { AxiosError, isAxiosError } from "axios";
+import { getCookies, setCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import * as z from "zod";
 
 const url = "http://localhost:5000/api/";
@@ -103,6 +108,55 @@ export async function deleteTask(taskId: string) {
     });
     toast({ description: "Tarefa excluída!" });
   } catch (error) {
+    throw error;
+  }
+}
+
+export async function onLogin(values: z.infer<typeof formLoginSchema>) {
+  try {
+    const response = await api.post("auth/login", {
+      email: values.email,
+      password: values.password,
+    });
+
+    const data = response.data;
+
+    setCookie("authorization", data.token, { maxAge: data.exp });
+    setCookie("userId", data.id, { maxAge: data.exp });
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      const errorResponse = axiosError.response?.data as AuthError;
+
+      toast({ description: errorResponse.message });
+    }
+    throw error;
+  }
+}
+
+export async function onSignup(values: z.infer<typeof formSignupSchema>) {
+  try {
+    const { email, name, password } = values;
+
+    await api.post("/users/create", {
+      email,
+      name,
+      password,
+    });
+
+    toast({
+      title: "Usuário cadastrado",
+      description: "Faça login para entrar",
+    });
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      const errorResponse = axiosError.response?.data as AuthError;
+
+      toast({ description: errorResponse.message });
+    }
     throw error;
   }
 }
