@@ -12,6 +12,7 @@ import { TaskTableRow } from "../table-row";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTasks } from "@/services/api";
 import { getCookies } from "cookies-next";
+import { EmptyTasks } from "../empty-tasks";
 
 export function TasksTable() {
   const { authorization, userId } = getCookies();
@@ -26,7 +27,7 @@ export function TasksTable() {
   }
 
   if (data?.length === 0) {
-    return <h1>Nenhuma tarefa</h1>;
+    return <EmptyTasks />;
   }
 
   return (
