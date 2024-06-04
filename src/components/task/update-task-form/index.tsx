@@ -102,9 +102,9 @@ export function UpdateTaskForm({ setIsOpen, task }: Props) {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Labels</SelectLabel>
-                        <SelectItem value="feat">Feat</SelectItem>
-                        <SelectItem value="doc">Doc</SelectItem>
-                        <SelectItem value="bug">Bug</SelectItem>
+                        <SelectItem value="Feat">Feat</SelectItem>
+                        <SelectItem value="Doc">Doc</SelectItem>
+                        <SelectItem value="Bug">Bug</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

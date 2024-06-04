@@ -1,4 +1,3 @@
-import { useToast } from "@/components/ui/use-toast";
 import { createTaskSchema } from "@/schemas/create-task-schema";
 import * as z from "zod";
 import { createTask } from "@/services/api";
@@ -62,6 +61,7 @@ export function CreateTask({ setIsOpen }: Props) {
   });
 
   const onSubmit = (data: z.infer<typeof createTaskSchema>) => {
+    console.log(data);
     mutation.mutate(data);
   };
 
@@ -107,9 +107,9 @@ export function CreateTask({ setIsOpen }: Props) {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Labels</SelectLabel>
-                        <SelectItem value="feat">Feat</SelectItem>
-                        <SelectItem value="doc">Doc</SelectItem>
-                        <SelectItem value="bug">Bug</SelectItem>
+                        <SelectItem value="Feat">Feat</SelectItem>
+                        <SelectItem value="Doc">Doc</SelectItem>
+                        <SelectItem value="Bug">Bug</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -204,5 +204,3 @@ export function CreateTask({ setIsOpen }: Props) {
     </Form>
   );
 }
-
-//return <TaskForm setIsOpen={setIsOpen} onSubmit={onSubmit}></TaskForm>;

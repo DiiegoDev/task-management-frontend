@@ -27,7 +27,7 @@ export function Content() {
       <Image
         src={appImage}
         alt="Imagem de exemplo da página inicial do web app"
-        className="max-w-3xl"
+        className="w-4/5 max-w-3xl"
       />
     </section>
   );

@@ -30,11 +30,11 @@ export function TasksTable() {
   }
 
   return (
-    <Table className="border rounded mt-10">
+    <Table className="border rounded mt-10 overflow-scroll">
       <TableHeader>
         <TableRow>
           <TableHead className="w-[30px] p-0"></TableHead>
-          <TableHead className="w-[35%]">Title</TableHead>
+          <TableHead className="w-[35%] min-w-48">Title</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Priority</TableHead>
           <TableHead>Due date</TableHead>

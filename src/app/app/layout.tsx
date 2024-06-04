@@ -1,13 +1,17 @@
-import { Dashboard } from "@/components/dashboard/dashboard";
+import { NavbarDesk } from "@/components/navbar/navbar-desc";
 import { PrivatePage } from "@/components/auth/private-page";
 import { PropsWithChildren } from "react";
 import { Toaster } from "@/components/ui/toaster";
+import { HeaderDesk } from "@/components/header/header-desk";
+import { HeaderMob } from "@/components/header/header-mob";
 
 export default async function layout({ children }: PropsWithChildren) {
   return (
     <PrivatePage>
-      <div className="grid grid-cols-[1fr_4fr] flex-1">
-        <Dashboard />
+      <HeaderDesk />
+      <HeaderMob />
+      <div className="flex flex-1">
+        <NavbarDesk />
         {children}
       </div>
       <Toaster />
