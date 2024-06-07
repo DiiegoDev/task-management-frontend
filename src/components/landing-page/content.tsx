@@ -20,7 +20,7 @@ export function Content() {
 
         <Link
           href="/login"
-          className="flex items-center gap-2 text-background xl:text-2xl lg:text-xl md:text-lg px-4 py-2 lg:px-8 lg:py-4 bg-gradient-to-r from-primary to-muted-foreground rounded-lg lg:rounded-2xl font-medium"
+          className="flex items-center gap-2 text-background text-sm xl:text-2xl lg:text-xl md:text-lg sm:text-base px-4 py-2 lg:px-8 lg:py-4 bg-gradient-to-r from-primary to-muted-foreground rounded-lg lg:rounded-2xl font-medium"
         >
           Comece agora
           <MoveRight />

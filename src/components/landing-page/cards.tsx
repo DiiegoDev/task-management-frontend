@@ -5,7 +5,7 @@ export function Cards() {
         Simplifique Suas Tarefas
       </h2>
 
-      <div className="w-4/5 lg:w-8/12 grid grid-cols-cards gap-4 lg:gap-8">
+      <div className="w-4/5 lg:w-8/12 grid grid-cols-cards justify-center gap-4 lg:gap-8">
         <div className="border p-6 rounded-lg flex-1 min-w-[270px] max-w-[350px]">
           <h3 className="font-medium lg:text-lg mb-6">
             Organize Suas Tarefas de Programação
