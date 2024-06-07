@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { LoginForm } from "../../components/auth/login/login-form";
+import { Authenticated } from "@/components/auth/authenticated";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -8,8 +9,10 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main className="flex justify-center items-center flex-1">
-      <LoginForm />
-    </main>
+    <Authenticated>
+      <main className="flex justify-center items-center flex-1">
+        <LoginForm />
+      </main>
+    </Authenticated>
   );
 }
