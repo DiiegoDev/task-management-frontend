@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchTasks } from "@/services/api";
 import { getCookies } from "cookies-next";
 import { EmptyTasks } from "../empty-tasks";
+import { TaskSkeleton } from "../task-skeleton";
 
 export function TasksTable() {
   const { authorization, userId } = getCookies();
@@ -23,7 +24,7 @@ export function TasksTable() {
   });
 
   if (isPending) {
-    return <h1>carregando...</h1>;
+    return <TaskSkeleton />;
   }
 
   if (data?.length === 0) {

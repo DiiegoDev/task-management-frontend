@@ -118,8 +118,12 @@ export function SignUpForm() {
               )}
             />
 
-            <Button type="submit" className=" transition mt-4">
-              Criar
+            <Button
+              type="submit"
+              className=" transition mt-4"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? "Criando..." : "Criar"}
             </Button>
           </form>
         </Form>

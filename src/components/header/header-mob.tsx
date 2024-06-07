@@ -9,7 +9,7 @@ export function HeaderMob() {
   return (
     <header className="py-4 border-b lg:hidden flex justify-center">
       <div className="w-4/5 flex items-center justify-between">
-        <div>Logo</div>
+        <div className="h-10 w-10 rounded-sm bg-primary-foreground"></div>
 
         <NavbarMob isOpen={isOpen} setIsOpen={setIsOpen}>
           <HamburgerMenuIcon

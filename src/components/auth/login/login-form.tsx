@@ -108,8 +108,12 @@ export function LoginForm() {
               )}
             />
 
-            <Button className="mt-4 font-semibold" type="submit">
-              Entrar
+            <Button
+              className="mt-4 font-semibold"
+              type="submit"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? "Entrando..." : "Entrar"}
             </Button>
           </form>
         </Form>

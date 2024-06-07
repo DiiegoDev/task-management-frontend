@@ -1,4 +1,4 @@
-import { ListChecks } from "lucide-react";
+import { ListChecks, LogOut } from "lucide-react";
 import Link from "next/link";
 import {
   Sheet,
@@ -49,7 +49,12 @@ export function NavbarMob({ children, isOpen, setIsOpen }: Props) {
 
         <SheetFooter>
           <nav>
-            <Link onClick={onLogout} href="/">
+            <Link
+              onClick={onLogout}
+              href="/"
+              className="text-sm flex gap-1 items-center text-red-200"
+            >
+              <LogOut size={16} />
               Sair
             </Link>
           </nav>
