@@ -7,11 +7,9 @@ import { formSignupSchema } from "@/schemas/signup.schema";
 import { updateTaskSchema } from "@/schemas/update-task-schema";
 import axios, { AxiosError, isAxiosError } from "axios";
 import { getCookies, setCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
-import { redirect } from "next/navigation";
 import * as z from "zod";
 
-const url = "http://localhost:5000/api/";
+const url = process.env.NEXT_PUBLIC_URL_API;
 
 export const api = axios.create({
   baseURL: url,
