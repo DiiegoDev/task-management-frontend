@@ -13,7 +13,7 @@ export function Header() {
   };
 
   return (
-    <header className="flex justify-between items-center">
+    <header className="w-full flex justify-between items-center">
       <h1 className="text-2xl lg:text-4xl font-semibold">Tarefas</h1>
       <Button
         onClick={changeIsOpen}
